@@ -17,5 +17,7 @@ jobs:
       - uses: r-lib/actions/setup-r@master
       - name: Instal paket rtweet
         run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
+      - name: Instal paket rvest
+        run: Rscript -e 'install.packages("rvest", dependencies = TRUE)'
       - name: Eksekusi Script R
         run: Rscript quran-bot.R
