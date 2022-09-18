@@ -15,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
-      - name: Instal paket rtweet
+      - name: Instal package rtweet
         run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
-      - name: Instal paket rvest
+      - name: Instal package rvest
         run: Rscript -e 'install.packages("rvest", dependencies = TRUE)'
       - name: Eksekusi Script R
         run: Rscript quran-bot.R
