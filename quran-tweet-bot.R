@@ -12,66 +12,68 @@ conSurah <- dbConnect(drv,
 )
 
 random_surah <- sample(1:114, 1)
-random_surah
 
 querySelectSurah <- paste("SELECT * FROM surah where idsurah =", random_surah,  sep = " ")
 
 surah <- dbGetQuery(conSurah, querySelectSurah)
-surah
 
 random_verse <- sample(1:surah$totalverse[1],1)
-random_verse
 
 url <- paste("https://quran.com/id/", surah$idsurah[1], "/", random_verse, sep = "")
-url
 
 page <- read_html(url)
-page
 
 verse <- page %>% 
   html_nodes(".TranslationText_ltr__146rZ") %>% 
   html_text(trim = TRUE)
-verse
 
 queryInputRandomSurah <- '
 SELECT * FROM tweet
 '
 
-
 dataInputTweet <- dbGetQuery(conSurah, queryInputRandomSurah)
 baris <- nrow(dataInputTweet)
 
+baris
 dataInputTweet <- data.frame(idtweet = (baris+1),
                         surahtweet = surah$surahname[1],
                         idverse = random_verse,
                         versetweet = verse)
-dataInputTweet
 
 dbWriteTable(conn = conSurah, name = "tweet", value = dataInputTweet, append = TRUE, row.names = FALSE, overwrite=FALSE)
 
-library(twitteR)
 
-api_key <- Sys.getenv("TWITTER_CONSUMER_API_KEY")
-api_secret <- Sys.getenv("TWITTER_CONSUMER_API_SECRET")
-access_token <- Sys.getenv("TWITTER_ACCESS_TOKEN")
-access_secret <- Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
-setup_twitter_oauth(
-  api_key,
-  api_secret,
-  access_token = access_token,
-  access_secret = access_secret
-)
+library(rtweet)
 
-baris <- nrow(dataInputTweet)
-baris
+queryAfterInput <- '
+SELECT * FROM tweet
+'
+
+dataTerupdate <- dbGetQuery(conSurah, queryAfterInput)
+baris <- nrow(dataTerupdate)
 
 queryPostTweet <- paste("Select * FROM tweet WHERE idtweet = ", baris, sep = "")
-queryPostTweet
 
 dataPostTweet <- dbGetQuery(conSurah, queryPostTweet)
-dataPostTweet
 
-twitteR::updateStatus(
-  paste(dataPostTweet$versetweet[1], " (QS. ", dataPostTweet$surahtweet[1], ":", dataPostTweet$idverse[1], ") #QuranDaily", sep = "")
+textTweet <- paste(dataPostTweet$versetweet[1], " (QS. ", dataPostTweet$surahtweet[1], ":", dataPostTweet$idverse[1], ") #QuranDaily", sep = "")
+
+countChar <- nchar(textTweet)
+countChar
+
+twitter_token <- rtweet::rtweet_bot(
+    api_key =    Sys.getenv("TWITTER_CONSUMER_API_KEY"),
+    api_secret = Sys.getenv("TWITTER_CONSUMER_API_SECRET"),
+    access_token =    Sys.getenv("TWITTER_ACCESS_TOKEN"),
+    access_secret =   Sys.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 )
+  
+# Post tweet
+if (countChar < 281){
+  rtweet::post_tweet(
+  status = textTweet,
+  token = twitter_token
+  )
+}
+

@@ -20,6 +20,6 @@ jobs:
       - name: Instal package RPostgreSQL
         run: Rscript -e 'install.packages("RPostgreSQL", dependencies = TRUE)'
       - name: Instal package twitteR
-        run: Rscript -e 'install.packages("twitteR", dependencies = TRUE)'
+        run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
       - name: Eksekusi Script R
         run: Rscript quran-tweet-bot.R
