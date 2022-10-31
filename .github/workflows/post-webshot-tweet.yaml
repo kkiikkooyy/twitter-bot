@@ -1,0 +1,42 @@
+name: post_webshot_tweet
+
+on:
+  schedule:
+    - cron: '10 * * * *'  # dijalankan setiap  30 menit
+
+jobs:
+  post-webshot-tweet:
+    runs-on: macos-latest
+    env:
+      ELEPHANT_SQL_DBNAME: ${{ secrets.ELEPHANT_SQL_DBNAME }}
+      ELEPHANT_SQL_HOST: ${{ secrets.ELEPHANT_SQL_HOST }}
+      ELEPHANT_SQL_USER: ${{ secrets.ELEPHANT_SQL_USER }}
+      ELEPHANT_SQL_PASSWORD: ${{ secrets.ELEPHANT_SQL_PASSWORD }}
+      TWITTER_CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
+      TWITTER_CONSUMER_API_SECRET: ${{ secrets.TWITTER_CONSUMER_API_SECRET }}
+      TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+      TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@v2
+      - name: Instal package rvest
+        run: Rscript -e 'install.packages("rvest", dependencies = TRUE)'
+      - name: Instal package RPostgreSQL
+        run: Rscript -e 'install.packages("RPostgreSQL", dependencies = TRUE)'
+      - name: Instal package webshot2
+        run: Rscript -e 'install.packages("webshot2", dependencies = TRUE)'
+      - name: Instal package magick
+        run: Rscript -e 'install.packages("magick", dependencies = TRUE)'
+      - name: Instal package twitteR
+        run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
+      - name: Eksekusi Script R
+        run: Rscript quran-bot.R
+    # Add new files in data folder, commit along with other modified files, push
+      - name: Commit and push if it changed
+        run: |-
+          git config user.name "Automated"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Latest data: ${timestamp}" || exit 0
+          git push
