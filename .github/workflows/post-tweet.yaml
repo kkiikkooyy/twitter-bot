@@ -2,7 +2,7 @@ name: post_tweet
 
 on:
   schedule:
-    - cron: '10 * * * *'  # dijalankan setiap  10 menit
+    - cron: '30 * * * *'  # dijalankan setiap  30 menit
 
 jobs:
   post-tweet:
@@ -15,9 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
-      - name: Instal package rtweet
-        run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
       - name: Instal package rvest
         run: Rscript -e 'install.packages("rvest", dependencies = TRUE)'
+      - name: Instal package RPostgreSQL
+        run: Rscript -e 'install.packages("RPostgreSQL", dependencies = TRUE)'
+      - name: Instal package twitteR
+        run: Rscript -e 'install.packages("twitteR", dependencies = TRUE)'
       - name: Eksekusi Script R
-        run: Rscript quran-bot.R
+        run: Rscript quran-tweet-bot.R
