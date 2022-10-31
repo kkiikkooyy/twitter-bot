@@ -2,7 +2,7 @@ name: post_tweet
 
 on:
   schedule:
-    - cron: '30 * * * *'  # dijalankan setiap  30 menit
+    - cron: '10 * * * *'  # dijalankan setiap  30 menit
 
 jobs:
   post-tweet:

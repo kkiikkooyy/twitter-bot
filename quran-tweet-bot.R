@@ -77,3 +77,4 @@ if (countChar < 281){
   )
 }
 
+on.exit(dbDisconnect(conSurah))
