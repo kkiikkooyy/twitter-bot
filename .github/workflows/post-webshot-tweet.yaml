@@ -28,7 +28,7 @@ jobs:
       - name: Instal package magick
         run: Rscript -e 'install.packages("magick", dependencies = TRUE)'
       - name: Instal package twitteR
-        run: Rscript -e 'install.packages("rtweet", dependencies = TRUE)'
+        run: Rscript -e 'install.packages("twitteR", dependencies = TRUE)'
       - name: Eksekusi Script R
         run: Rscript quran-bot.R
     # Add new files in data folder, commit along with other modified files, push
